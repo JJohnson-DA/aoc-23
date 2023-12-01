@@ -1,43 +1,41 @@
 # %%
 import re
 
-digits = []
-trimmed = []
+pattern = r"(?:one|two|three|four|five|six|seven|eight|nine|\d+)"
 
-p2 = r"(?:one|two|three|four|five|six|seven|eight|nine|\d+)"
+p1_digits = []
+p2_digits = []
 
-p1_total = 0
-p2_total = 0
-
-p2_dict = {
-    "one": 1,
-    "two": 2,
-    "three": 3,
-    "four": 4,
-    "five": 5,
-    "six": 6,
-    "seven": 7,
-    "eight": 8,
-    "nine": 9,
-}
+words = [
+    "one",
+    "two",
+    "three",
+    "four",
+    "five",
+    "six",
+    "seven",
+    "eight",
+    "nine",
+]
 
 with open("../data/d01.txt", "r") as f:
     for line in f:
-        d1 = "".join(re.findall(r"\d+", line))
-        p1_total += int(d1[0] + d1[-1])
+        p1 = []
+        for i, d in enumerate(line):
+            if d.isdigit():
+                p1.append(d)
+        p1_digits.append("".join(p1))
 
-        d2 = re.findall(p2, line)
-        temp = []
-        for d in d2:
-            try:
-                _ = int(d)
-                temp.append(d)
-            except:
-                temp.append(str(p2_dict[d]))
-        temp = "".join(temp)
-        print(temp)
-        p2_total += int(temp[0] + temp[-1])
+        p2 = []
+        for i, d in enumerate(line):
+            if d.isdigit():
+                p2.append(d)
+            else:
+                for j, word in enumerate(words):
+                    if line[i:].startswith(word):
+                        p2.append(str(j + 1))
+        p2_digits.append("".join(p2))
 
 
-print(p1_total, p2_total)
-# %%
+print(sum([int(x[0] + x[-1]) for x in p1_digits]))
+print(sum([int(x[0] + x[-1]) for x in p2_digits]))
