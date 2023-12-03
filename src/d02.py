@@ -2,23 +2,19 @@
 from playground import *
 import re
 
-# 12 red cubes, 13 green cubes, and 14 blue cubes
+# get input file
+games = load_input_lines(__file__)
 
-game_ids = []
-powers = []
-
-# separate into games
-with open("../data/d02.txt", "r") as f:
-    games = f.readlines()
+# Lists to append to
+possible_total = 0
+powers = 0
 
 for game in games:
     id, logs = game.split(":")
     id = int(re.findall("\d+", id)[0])
-
     logs = [x.strip() for x in logs.split(";")]
 
     results = []
-
     power = {}
 
     for log in logs:
@@ -31,18 +27,17 @@ for game in games:
             else:
                 power[color] = max(power[color], num)
 
-            if (color == "blue") & (num > 14):
-                results.append(True)
-            elif (color == "red") & (num > 12):
-                results.append(True)
-            elif (color == "green") & (num > 13):
+            if (
+                (color == "blue" and num > 14)
+                or (color == "red" and num > 12)
+                or (color == "green" and num > 13)
+            ):
                 results.append(True)
             else:
                 results.append(False)
-    powers.append(power["red"] * power["blue"] * power["green"])
+    powers += power["red"] * power["blue"] * power["green"]
 
     if sum(results) == 0:
-        game_ids.append(id)
+        possible_total += id
 
-
-print(f"Part 1: {sum(game_ids)}\nPart 2: {sum(powers)}")
+print(f"Part 1: {possible_total}\nPart 2: {powers}")
