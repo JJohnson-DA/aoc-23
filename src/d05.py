@@ -10,7 +10,13 @@ with open("../data/d05.txt", "r") as f:
 
 seeds_start = [int(x) for x in re.findall("\d+", chunks[0])]
 
-seeds_p1 = seeds_start.copy()
+p1 = seeds_start.copy()
+# p2 = set()
+# for i in range(0, len(seeds_start)):
+#     if i % 2 == 0:
+#         # p2.append((seeds_start[i], sum(seeds_start[i : i + 2])))
+#         [p2.add(seeds_start[i] + x) for x in range(0, seeds_start[i+1])]
+
 
 for chunk in chunks[1:]:
     num_map = {}
@@ -23,7 +29,7 @@ for chunk in chunks[1:]:
     new_seeds = []
 
     # For each seed
-    for seed in seeds_p1:
+    for seed in p1:
         seed_match = False
         # for each key, value in num map
         for key, value in num_map.items():
@@ -35,8 +41,8 @@ for chunk in chunks[1:]:
         if not seed_match:
             new_seeds.append(seed)
 
-    seeds_p1 = new_seeds.copy()
+    p1 = new_seeds.copy()
 
-print(f"Part 1: {min(seeds_p1)}\nRun Time: {time.time() - start}")
+print(f"Part 1: {min(p1)}\nRun Time: {time.time() - start}")
 
 # %%
