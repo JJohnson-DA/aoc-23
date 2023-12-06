@@ -11,12 +11,6 @@ with open("../data/d05.txt", "r") as f:
 seeds_start = [int(x) for x in re.findall("\d+", chunks[0])]
 
 p1 = seeds_start.copy()
-# p2 = set()
-# for i in range(0, len(seeds_start)):
-#     if i % 2 == 0:
-#         # p2.append((seeds_start[i], sum(seeds_start[i : i + 2])))
-#         [p2.add(seeds_start[i] + x) for x in range(0, seeds_start[i+1])]
-
 
 for chunk in chunks[1:]:
     num_map = {}
@@ -46,3 +40,37 @@ for chunk in chunks[1:]:
 print(f"Part 1: {min(p1)}\nRun Time: {time.time() - start}")
 
 # %%
+import re
+
+with open("../data/d05.txt", "r") as f:
+    chunks = f.read().split("\n\n")
+
+# * character assigns remaining elements in list to rules as a list
+seeds, *rules = chunks
+seeds = [int(x) for x in re.findall("\d+", seeds)]
+
+
+class Rule:
+    def __init__(self, rule):
+        groups = [line for line in rule.split("\n")[1:]]
+        self.rule_ranges = [[int(x) for x in group.split()] for group in groups]
+
+    def apply_rule(self, seed):
+        for dest, src, steps in self.rule_ranges:
+            # check if seed lies between current range
+            if src <= seed <= (src + steps):
+                # return new seed value
+                return seed - src + dest
+        # Return orginal value not in any of the ranges
+        return seed
+
+
+rules = [Rule(r) for r in rules]
+
+p1 = []
+for seed in seeds:
+    for rule in rules:
+        seed = rule.apply_rule(seed)
+    p1.append(seed)
+
+print(min(p1))
