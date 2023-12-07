@@ -65,21 +65,17 @@ class PokerGame:
     def _categorize_p2(self):
         for card, bet in self.hands:
             c = Counter(card)
-            print(c)
             temp_c = []
             if "J" in c.keys() and "".join(c.keys()) != "J":
                 temp_c = self.make_best_hand(c)
             use_c = c if not temp_c else temp_c
-            print(use_c)
             r = self.hand_ranks[tuple(sorted(use_c.values()))]
             mapped_card = "".join(self.card_order_p2[i] for i in card)
             self.categorized_p2[r][mapped_card] = bet
 
     def make_best_hand(self, c):
         # extract J value
-        j = c["J"]
-        # remove J from counter
-        del c["J"]
+        j = c.pop("J")
         # add J value to highest count left
         c[max(c, key=c.get)] = c[max(c, key=c.get)] + j
         # Return counter
