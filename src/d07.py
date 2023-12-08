@@ -3,11 +3,11 @@ from playground import *
 from collections import Counter
 
 lines = load_input_lines("test")
-lines = load_input_lines(__file__)
 
 
 class PokerGame:
-    def __init__(self, hands):
+    def __init__(self, hands, part):
+        self.part = part
         self.hands = [
             (card, int(bet)) for card, bet in [line.split() for line in hands]
         ]
@@ -20,82 +20,53 @@ class PokerGame:
             (1, 4): 6,  # four of a kind
             (5,): 7,  # five of a kind
         }
-        self.card_order_p1 = {
-            "A": "00",
-            "K": "01",
-            "Q": "02",
-            "J": "03",
-            "T": "04",
-            "9": "05",
-            "8": "06",
-            "7": "07",
-            "6": "08",
-            "5": "09",
-            "4": "10",
-            "3": "11",
-            "2": "12",
+        self.card_order = {
+            "A": ["00", "00"],
+            "K": ["01", "01"],
+            "Q": ["02", "02"],
+            "J": ["03", "12"],
+            "T": ["04", "03"],
+            "9": ["05", "04"],
+            "8": ["06", "05"],
+            "7": ["07", "06"],
+            "6": ["08", "07"],
+            "5": ["09", "08"],
+            "4": ["10", "09"],
+            "3": ["11", "10"],
+            "2": ["12", "11"],
         }
-        self.card_order_p2 = {
-            "A": "00",
-            "K": "01",
-            "Q": "02",
-            "T": "03",
-            "9": "04",
-            "8": "05",
-            "7": "06",
-            "6": "07",
-            "5": "08",
-            "4": "09",
-            "3": "10",
-            "2": "11",
-            "J": "12",
-        }
-        self.categorized_p1 = {i: {} for i in self.hand_ranks.values()}
-        self.categorized_p2 = {i: {} for i in self.hand_ranks.values()}
-        self._categorize_p1()
-        self._categorize_p2()
+        self.categorized = {i: {} for i in self.hand_ranks.values()}
+        self._categorize(self.part)
 
-    def _categorize_p1(self):
+    def _categorize(self, part):
         for card, bet in self.hands:
             c = Counter(card)
+            if part == 2:
+                temp_c = []
+                if "J" in c.keys() and "".join(c.keys()) != "J":
+                    temp_c = self.make_best_hand(c)
+                c = c if not temp_c else temp_c
             r = self.hand_ranks[tuple(sorted(c.values()))]
-            mapped_card = "".join(self.card_order_p1[i] for i in card)
-            self.categorized_p1[r][mapped_card] = bet
-
-    def _categorize_p2(self):
-        for card, bet in self.hands:
-            c = Counter(card)
-            temp_c = []
-            if "J" in c.keys() and "".join(c.keys()) != "J":
-                temp_c = self.make_best_hand(c)
-            use_c = c if not temp_c else temp_c
-            r = self.hand_ranks[tuple(sorted(use_c.values()))]
-            mapped_card = "".join(self.card_order_p2[i] for i in card)
-            self.categorized_p2[r][mapped_card] = bet
+            mapped_card = "".join(self.card_order[i][self.part - 1] for i in card)
+            self.categorized[r][mapped_card] = bet
 
     def make_best_hand(self, c):
-        # extract J value
         j = c.pop("J")
-        # add J value to highest count left
         c[max(c, key=c.get)] = c[max(c, key=c.get)] + j
-        # Return counter
         return c
 
-    def calculate_score(self, hands, part):
+    def calculate_score(self):
         ranked_hands = []
-        for i, hs in hands:
+        for i, hs in self.categorized.items():
             if hs:
                 ho = sorted(hs, reverse=True)
                 for h in ho:
                     ranked_hands.append(hs[h])
-        p1 = 0
+        score = 0
         for i, bet in enumerate(ranked_hands):
-            p1 += (i + 1) * bet
-        print(f"Part {part}: {p1}")
-
-    def solve(self):
-        self.calculate_score(hands=self.categorized_p1.items(), part=1)
-        self.calculate_score(hands=self.categorized_p2.items(), part=2)
+            score += (i + 1) * bet
+        print(f"Part {self.part}: {score}")
 
 
-PokerGame(lines).solve()
+for part in [1, 2]:
+    PokerGame(lines, part).calculate_score()
