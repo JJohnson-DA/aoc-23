@@ -17,7 +17,7 @@ def words_to_number(words):
         return None
 
 
-def load_input_lines(current_file):
+def load_lines(current_file):
     if current_file == "test":
         with open("../data/test.txt", "r") as f:
             lines = [l.replace("\n", "") for l in f.readlines()]
