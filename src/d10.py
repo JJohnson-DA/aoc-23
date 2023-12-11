@@ -54,10 +54,8 @@ if target_cycles:
 
 # Create a polygon from the loop's coordinates
 p = Polygon(target_cycles[0])
-
-# Count points within the loop
-contained = sum(
-    p.contains(Point(i)) for i in all_coords.keys() if i not in target_cycles[0]
-)
-
+# Subset points to check
+to_check = list(set(all_coords.keys()).difference(set(target_cycles[0])))
+# Get count of points contained within polygon
+contained = sum(p.contains(Point(i)) for i in to_check)
 print("Contained Points:", contained)
