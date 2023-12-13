@@ -20,7 +20,7 @@ class ValleyMap:
             bottom = l[i : len(top) + i]
             if top == bottom:
                 sym_max = max(sym_max, i)
-        return sym_max
+        return (sym_max, l[: sym_max * 2])
 
     def check_bottom(self, l):
         sym_max = 0
@@ -30,12 +30,15 @@ class ValleyMap:
             top = l[i - len(bottom) : i][::-1]
             if top == bottom:
                 sym_max = max(sym_max, i)
-        return sym_max
+        return (sym_max, l[sym_max * 2 - 1 :])
 
     def find_horizontal(self, l):
         t = self.check_top(l)
         b = self.check_bottom(l)
-        return max(t, b)
+        if t[0] > b[0]:
+            return t
+        else:
+            return b
 
     def find_vertical(self, l):
         l = self.transpose(l)
@@ -45,8 +48,10 @@ class ValleyMap:
     def score_map(self, l):
         h = self.find_horizontal(l)
         v = self.find_vertical(l)
-        d = "h" if h > 0 else "v"
-        return (d, v + (100 * h))
+        if h[0] != 0:
+            return (h[0] * 100, h[1])
+        else:
+            return v
 
     def swap_char(self, char):
         if char == ".":
@@ -54,32 +59,12 @@ class ValleyMap:
         if char == "#":
             return "."
 
-    # def find_smudge(self, l):
-    #     sol1 = self.score_map(l)
-    #     print(sol1)
 
-    #     for i in range(len(l)):
-    #         for j in range(len(l[0])):
-    #             l2 = [list(x) for x in l]
-    #             l2[i][j] = self.swap_char(l2[i][j])
-    #             l2 = ["".join(x) for x in l2]
-
-    #             h = self.find_horizontal(l2)
-    #             v = self.find_vertical(l2)
-
-    #             if sol2[1] > 0 and sol2[0] != sol1[0]:
-    #                 print("-" * 20)
-    #                 return sol2
-
-    #     return sol1
-
-
-vm = ValleyMap(maps[1])
+vm = ValleyMap(maps[0])
 
 maps = [ValleyMap(m) for m in maps]
-print("Part 1:", sum(m.score_map(m.map)[1] for m in maps))
-# print("Part 2:", sum(m.find_smudge(m.map)[1] for m in maps))
+print("Part 1:", sum(m.score_map(m.map)[0] for m in maps))
+# print("Part 2:", sum(m.find_smudge(m.map)[0] for m in maps))
 
 # 29807 too high
 # 718 too low
-# %%
