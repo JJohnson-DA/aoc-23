@@ -1,6 +1,4 @@
 # %%
-from playground import *
-
 with open("../data/d15.txt", "r") as f:
     lines = f.read().split(",")
 
@@ -20,8 +18,6 @@ def split_line(line):
         return line.split("-")
 
 
-print(f"Part 1: {sum(get_hash(line) for line in lines)}")
-
 boxes = {i: {} for i in range(0, 256)}
 
 for line in lines:
@@ -38,4 +34,5 @@ p2 = sum(
     for i, lv in enumerate(bl.items())
 )
 
+print("Part 1:", sum(get_hash(line) for line in lines))
 print("Part 2:", p2)
