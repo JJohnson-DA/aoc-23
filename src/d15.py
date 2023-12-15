@@ -28,16 +28,14 @@ for line in lines:
     c, fl = split_line(line)
     bn = get_hash(c)
     if fl == "":
-        if boxes[bn].get(c):
-            boxes[bn].pop(c)
+        boxes[bn].pop(c, None)
     else:
-        if boxes[bn].get(c):
-            boxes[bn][c] = fl
-        else:
-            boxes[bn][c] = fl
+        boxes[bn][c] = fl
 
-p2 = 0
-for b, bl in boxes.items():
-    p2 += sum((1 + b) * (i + 1) * int(lv[1]) for i, lv in enumerate(bl.items()))
+p2 = sum(
+    (1 + b) * (i + 1) * int(lv[1])
+    for b, bl in boxes.items()
+    for i, lv in enumerate(bl.items())
+)
 
 print("Part 2:", p2)
