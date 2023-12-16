@@ -32,3 +32,9 @@ def load_lines(current_file):
             lines = [l.rstrip() for l in f.readlines()]
 
     return lines
+
+
+def create_grid(lines):
+    return {
+        (i, j): lines[i][j] for i in range(len(lines)) for j in range(len(lines[0]))
+    }
