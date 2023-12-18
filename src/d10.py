@@ -52,10 +52,5 @@ target_cycles = [cycle for cycle in nx.simple_cycles(G) if start in cycle]
 if target_cycles:
     print(f"Furthest Point: {len(target_cycles[0]) / 2}")
 
-# Create a polygon from the loop's coordinates
-p = Polygon(target_cycles[0])
-# Subset points to check
-to_check = list(set(all_coords.keys()).difference(set(target_cycles[0])))
-# Get count of points contained within polygon
-contained = sum(p.contains(Point(i)) for i in to_check)
+contained = get_interior_size(target_cycles[0])
 print("Contained Points:", contained)

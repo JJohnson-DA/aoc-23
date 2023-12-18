@@ -21,8 +21,6 @@ for part in [1, 2]:
         coords.append(next)
         start = coords[-1]
 
-    P = Polygon(coords)
-
-    result = int(P.area + P.length // 2 + 1)
+    result = get_area(coords)
 
     print(f"Part {part}: {result}")

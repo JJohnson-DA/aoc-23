@@ -2,6 +2,7 @@
 import inflect
 from word2number import w2n
 import platform
+from shapely import Polygon
 
 
 def number_to_words(number):
@@ -38,3 +39,15 @@ def create_grid(lines):
     return {
         (i, j): lines[i][j] for i in range(len(lines)) for j in range(len(lines[0]))
     }
+
+
+def get_interior_size(coordinates):
+    P = Polygon(coordinates)
+    # Picks Theorem:
+    return int(P.area - P.length // 2 + 1)
+
+
+def get_area(coordinates):
+    P = Polygon(coordinates)
+    # Picks Theorem
+    return int(P.area + P.length // 2 + 1)
