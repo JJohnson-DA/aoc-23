@@ -1,5 +1,6 @@
 # %%
 from playground import *
+import heapq
 
 lines = load_lines(__file__)
 
@@ -47,13 +48,14 @@ def get_neighbors(p, m, s, part=1):
 # iterate over part 1 and 2
 for part in [1, 2]:
     # Starting from (0,0) and 0 cost
-    queue = [[(0, 0), "r", 0, 0]]
+    queue = [[0, (0, 0), "r", 0]]
+    heapq.heapify(queue)
     # Cache for points we've already seen and branched from
     checked = {}
     # While there are points in the queue
     while queue:
         # get elements from the next item in the queue
-        point, moving, step_count, loss = queue.pop()
+        loss, point, moving, step_count = heapq.heappop(queue)
         # Check if it's already been seen
         if checked.get((point, moving, step_count)):
             continue
@@ -66,9 +68,9 @@ for part in [1, 2]:
             new_loss = int(grid[c]) + loss
             new_step_count = 1 if d != moving else step_count + 1
             # Add the current info to the queue to check again
-            queue.append([c, d, new_step_count, new_loss])
+            heapq.heappush(queue, [new_loss, c, d, new_step_count])
         # Sort queue in descending order to make sure the next step is the lowest cost
-        queue = sorted(queue, key=lambda x: x[-1], reverse=True)
+        # queue = sorted(queue, key=lambda x: x[-1], reverse=True)
     # destination point
     end = (len(lines) - 1, len(lines[0]) - 1)
     # get minimum cost of all checked spots that match the destination
