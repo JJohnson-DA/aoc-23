@@ -46,15 +46,17 @@ class Part:
                     self.next = v["d"]
                     match_found = True
             if not match_found:
-                self.next = v["d"]
+                self.next = flow.fallback
         if self.next == "A":
             return sum(self.nums.values())
         else:
             return 0
 
 
-P = Part(parts[1])
+parts = [Part(p) for p in parts]
 flows = {f.id: f for f in [Workflow(w) for w in workflows]}
+
+sum(p.check_flow(flows) for p in parts)
 
 # W = Workflow(workflows[0])
 
