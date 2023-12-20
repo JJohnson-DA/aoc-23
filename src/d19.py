@@ -1,5 +1,4 @@
 # %%
-from typing import Any
 from playground import *
 import re
 
@@ -45,6 +44,8 @@ class Part:
                 if eval(v["c"]):
                     self.next = v["d"]
                     match_found = True
+                if self.next in "AR":
+                    break
             if not match_found:
                 self.next = flow.fallback
         if self.next == "A":
@@ -55,9 +56,7 @@ class Part:
 
 parts = [Part(p) for p in parts]
 flows = {f.id: f for f in [Workflow(w) for w in workflows]}
-
+# parts[1].check_flow(flows)
 sum(p.check_flow(flows) for p in parts)
 
-# W = Workflow(workflows[0])
-
-# %%
+# 377962 too high
