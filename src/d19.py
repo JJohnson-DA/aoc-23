@@ -39,10 +39,8 @@ class Part:
         self.next = "in"
 
     def check_workflows(self, flows):
-        print(self.nums)
         while self.next not in "AR":
             flow = flows[self.next]
-            print(flow.checks)
             match_found = False
             for l, c, d in flow.checks:
                 if match_found or self.next in "AR":
@@ -62,13 +60,4 @@ class Part:
 
 parts = [Part(p) for p in parts]
 flows = {f.id: f for f in [Workflow(w) for w in workflows]}
-# parts[11].check_workflows(flows['vhb'])
-sum(p.check_workflows(flows) for p in parts)
-
-# 377962 too high
-# 362013 too high
-# 327646 not right
-# 342727 not right
-# 329616 not right
-# 354108 not right
-# 345108 not right
+print(f"Part 1: {sum(p.check_workflows(flows) for p in parts)}")
