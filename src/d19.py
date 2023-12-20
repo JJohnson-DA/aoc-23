@@ -14,18 +14,16 @@ class Workflow:
         id, quals = workflow.split("{")
         qs = quals.split(",")
         self.id = id
-        self.checks = {}
+        self.checks = []
         self.fallback = None
 
         for q in qs:
             x = q.split(":")
             if len(x) > 1:
                 l = x[0][0]
-                if l not in self.checks.keys():
-                    self.checks[l] = []
-                    self.checks[l].append(["pn" + x[0][1:], x[1]])
-                else:
-                    self.checks[l].append(["pn" + x[0][1:], x[1]])
+                c = "pn" + x[0][1:]
+                d = x[1]
+                self.checks.append([l, c, d])
             if len(x) == 1:
                 self.fallback = x[0].replace("}", "")
 
@@ -41,18 +39,19 @@ class Part:
         self.next = "in"
 
     def check_workflows(self, flows):
+        print(self.nums)
         while self.next not in "AR":
             flow = flows[self.next]
+            print(flow.checks)
             match_found = False
-            for l, v in flow.checks.items():
+            for l, c, d in flow.checks:
                 if match_found or self.next in "AR":
                     break
                 pn = self.nums[l]
-                for c, d in v:
-                    if eval(c):
-                        self.next = d
-                        match_found = True
-                        # break
+                if eval(c):
+                    self.next = d
+                    match_found = True
+                    break
             if not match_found:
                 self.next = flow.fallback
         if self.next == "A":
